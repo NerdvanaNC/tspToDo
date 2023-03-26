@@ -1,10 +1,15 @@
 import { pb } from '$lib/pocketbase';
-import { fail } from '@sveltejs/kit'
+import { fail, redirect } from '@sveltejs/kit'
 
-export async function load() {
-  const todoLists = await pb.collection('todoLists').getFullList({ sort: '-created' });
+export async function load({ locals }) {
 
-  return({ todoLists: structuredClone(todoLists) });
+  if(locals.user != null) {
+    const todoLists = await pb.collection('todoLists').getFullList({ sort: '-created' });
+    return({ todoLists: structuredClone(todoLists) });
+  } else {
+    // needs auth
+    throw redirect(303, '/login');
+  }
 }
 
 export const actions = {
