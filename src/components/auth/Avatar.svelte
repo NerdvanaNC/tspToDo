@@ -1,9 +1,10 @@
 <script>
-  import { pb, currentUser } from '$lib/pocketbase';
-  import { enhance, applyAction } from '$app/forms';
+  import { enhance } from '$app/forms';
+
+  export let authenticated;
 </script>
 
-{#if $currentUser}
+{#if authenticated}
   <!-- Ignoring some a11y warnings coming from Daisy UI -->
   <div class="dropdown dropdown-end absolute right-10 top-10">
     <div class="avatar">
@@ -15,12 +16,7 @@
         <ul tabindex="0" class="dropdown-content menu p-4 mt-4 shadow bg-base-200 rounded-box w-52">
           <li><a href="/profile">Profile</a></li>
           <li>
-            <form action="/logout" method="POST" use:enhance={() => {
-              return async({ result }) => {
-                pb.authStore.clear();
-                await applyAction(result);
-              }
-            }}>
+            <form action="/logout" method="POST" use:enhance>
               <button type="submit">Logout</button>
             </form>
           </li>
@@ -31,6 +27,6 @@
 {:else}
   <div class="absolute right-10 top-10">
     <button class="btn btn-ghost mr-4"><a href="/login">Login</a></button>
-    <button class="btn btn-primary">Sign Up</button>
+    <button class="btn btn-primary"><a href="/register">Register</a></button>
   </div>
 {/if}

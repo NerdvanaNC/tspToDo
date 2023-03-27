@@ -1,11 +1,9 @@
-import { pb } from '$lib/pocketbase';
 import { fail, redirect } from '@sveltejs/kit'
 
 export async function load({ locals }) {
-
-  if(locals.user != null) {
-    const todoLists = await pb.collection('todoLists').getFullList({ sort: '-created' });
-    return({ todoLists: structuredClone(todoLists) });
+  if(locals.user) {
+    const todoLists = await locals.pb.collection('todoLists').getFullList({ sort: '-created' });
+    return ({ todoLists: structuredClone(todoLists) });
   } else {
     // needs auth
     throw redirect(303, '/login');
@@ -13,7 +11,7 @@ export async function load({ locals }) {
 }
 
 export const actions = {
-  addNewList: async ({ request }) => {
+  addNewList: async ({ request, locals }) => {
     const formData = await request.formData();
     const listName = formData.get('todoListName');
 
@@ -21,6 +19,6 @@ export const actions = {
       return fail(400, { form: 'addNewList', error: true });
     }
 
-    const createdRecord = await pb.collection('todoLists').create({ 'name': listName });
+    await locals.pb.collection('todoLists').create({ 'name': listName });
   }
 }

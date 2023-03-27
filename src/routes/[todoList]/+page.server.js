@@ -1,28 +1,31 @@
-import { pb } from '$lib/pocketbase';
-import { fail } from '@sveltejs/kit'
+import { fail, redirect } from '@sveltejs/kit'
 
-export async function load({ params }) {
-  const todoList = await pb.collection('todoLists').getOne(params.todoList);  
-  const todoItems = await pb.collection('todoItems').getFullList({ filter: `parentList="${todoList.id}"`, sort: 'created' });
+export async function load({ locals, params }) {
+  if(!locals.user) {
+    throw redirect(303, '/');
+  }
+  
+  const todoList = await locals.pb.collection('todoLists').getOne(params.todoList);  
+  const todoItems = await locals.pb.collection('todoItems').getFullList({ filter: `parentList="${todoList.id}"`, sort: 'created' });
 
-  return({ todoList: structuredClone(todoList), todoItems: structuredClone(todoItems) });
+  return ({ todoList: structuredClone(todoList), todoItems: structuredClone(todoItems) });
 }
 
 export const actions = {
-  markAsDone: async ({ request }) => {
+  markAsDone: async ({ locals, request }) => {
     const formData = await request.formData();
     const todoID = formData.get('todoItemID');
-    const todoItem = await pb.collection('todoItems').getOne(todoID);
-    const updatedRecord = await pb.collection('todoItems').update(todoItem.id, { done: !todoItem.done });
+    const todoItem = await locals.pb.collection('todoItems').getOne(todoID);
+    await locals.pb.collection('todoItems').update(todoItem.id, { done: !todoItem.done });
   },
 
-  delete: async ({ request }) => {
+  delete: async ({ locals, request }) => {
     const formData = await request.formData();
     const todoID = formData.get('todoItemID');
-    await pb.collection('todoItems').delete(todoID);
+    await locals.pb.collection('todoItems').delete(todoID);
   },
 
-  addNew: async ({ request, params }) => {
+  addNew: async ({ locals, request, params }) => {
     const formData = await request.formData();
     const todoDesc = formData.get('newItem');
 
@@ -30,10 +33,10 @@ export const actions = {
       return fail(400, { form: 'addNew', error: true });
     }
 
-    const newItem = pb.collection('todoItems').create({ 'description': todoDesc, 'parentList': params.todoList });
+    await locals.pb.collection('todoItems').create({ 'description': todoDesc, 'parentList': params.todoList });
   },
 
-  updateTodoListName: async ({ request, params }) => {
+  updateTodoListName: async ({ locals, request, params }) => {
     const formData = await request.formData();
     const newName = formData.get('todoListName');
 
@@ -41,6 +44,6 @@ export const actions = {
       return fail(400, { form: 'updateTodoListName', error: true });
     }
 
-    const updatedRecord = await pb.collection('todoLists').update(params.todoList, { 'name': newName });
+    await locals.pb.collection('todoLists').update(params.todoList, { 'name': newName });
   }
 }
