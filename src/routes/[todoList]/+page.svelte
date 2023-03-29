@@ -1,6 +1,6 @@
 <script>
   import { enhance } from '$app/forms';
-  import { onMount } from 'svelte';
+  import { afterUpdate } from 'svelte';
   import { fly } from 'svelte/transition';
   import GoBack from '../../components/util/GoBack.svelte';
   
@@ -9,7 +9,7 @@
 
   let addNewInput;
 
-  onMount(() => {
+  afterUpdate(() => {
     addNewInput.focus();
   })
 </script>
