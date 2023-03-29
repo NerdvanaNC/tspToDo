@@ -26,7 +26,7 @@
   </div>
 {:else}
   <div class="absolute right-10 top-10">
-    <button class="btn btn-ghost mr-4"><a href="/login">Login</a></button>
-    <button class="btn btn-primary"><a href="/register">Register</a></button>
+    <a class="btn btn-ghost mr-4" href="/login">Login</a>
+    <a class="btn btn-primary" href="/register">Register</a>
   </div>
 {/if}

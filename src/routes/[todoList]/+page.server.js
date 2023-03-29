@@ -1,21 +1,33 @@
-import { fail, redirect } from '@sveltejs/kit'
+import { error, fail, redirect } from '@sveltejs/kit'
 
 export async function load({ locals, params }) {
   if(!locals.user) {
     throw redirect(303, '/');
   }
+
+  let todoList;
+  let todoItems;
   
-  const todoList = await locals.pb.collection('todoLists').getOne(params.todoList);  
-  const todoItems = await locals.pb.collection('todoItems').getFullList({ filter: `parentList="${todoList.id}"`, sort: 'created' });
+  try {
+    todoList = await locals.pb.collection('todoLists').getOne(params.todoList);
+    todoItems = await locals.pb.collection('todoItems').getFullList({ filter: `parentList="${todoList.id}" && owner.id="${locals.user.id}"`, sort: 'created' });
+  } catch (e) {
+    throw error(404, e.response.message);
+  }
 
   return ({ todoList: structuredClone(todoList), todoItems: structuredClone(todoItems) });
 }
 
 export const actions = {
   markAsDone: async ({ locals, request }) => {
+    let todoItem;
     const formData = await request.formData();
     const todoID = formData.get('todoItemID');
-    const todoItem = await locals.pb.collection('todoItems').getOne(todoID);
+    try {
+      todoItem = await locals.pb.collection('todoItems').getOne(todoID);
+    } catch (e) {
+      throw error(400, e.response.message);
+    }
     await locals.pb.collection('todoItems').update(todoItem.id, { done: !todoItem.done });
   },
 
@@ -33,7 +45,7 @@ export const actions = {
       return fail(400, { form: 'addNew', error: true });
     }
 
-    await locals.pb.collection('todoItems').create({ 'description': todoDesc, 'parentList': params.todoList });
+    await locals.pb.collection('todoItems').create({ 'description': todoDesc, 'parentList': params.todoList, owner: locals.user.id });
   },
 
   updateTodoListName: async ({ locals, request, params }) => {

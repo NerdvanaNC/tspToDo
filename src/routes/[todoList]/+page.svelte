@@ -1,9 +1,16 @@
 <script>
   import { enhance } from '$app/forms';
+  import { onMount } from 'svelte';
   import GoBack from '../../components/util/GoBack.svelte';
   
   export let data; // data = { todoLists: {...}, todoItems: {...} }
   export let form;
+
+  let addNewInput;
+
+  onMount(() => {
+    addNewInput.focus();
+  })
 </script>
 
 <main class="w-96 h-[45vh]">
@@ -49,7 +56,7 @@
   <form class="form-control mx-6 block" method="POST" action="?/addNew" use:enhance>
     <div class="relative mt-6">
       <div class="{form?.form === 'addNew' && form?.error ? 'tooltip tooltip-open' : ''} tooltip-bottom tooltip-error w-full" data-tip="ToDo items need a description.">
-        <input type="text" name="newItem" placeholder="Add new item..." class="input input-sm input-ghost py-1 px-0 pr-10 h-auto w-full outline-0 focus:outline-0 border-b-2 border-0 border-b-neutral rounded-none" />
+        <input bind:this={addNewInput} type="text" name="newItem" placeholder="Add new item..." class="input input-sm input-ghost py-1 px-0 pr-10 h-auto w-full outline-0 focus:outline-0 border-b-2 border-0 border-b-neutral rounded-none" />
         <button type="submit" class="absolute right-0 top-1">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path class="fill-neutral-content" fill="currentColor" d="M4.4 19.425q-.5.2-.95-.088T3 18.5v-3.725q0-.35.2-.625t.55-.35L11 12l-7.25-1.8q-.35-.075-.55-.35T3 9.225V5.5q0-.55.45-.838t.95-.087l15.4 6.5q.625.275.625.925t-.625.925l-15.4 6.5Z"/></svg>
         </button>

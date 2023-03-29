@@ -8,12 +8,16 @@
 <main class="w-96 h-[45vh]">
   <div class="card w-full h-full m-0 bg-base-200">
     <h2 class="card-title bg-primary px-8 py-4 text-primary-content rounded-tl-md rounded-tr-md">Your Lists</h2>
-    <div class="py-8 px-8 overflow-auto text-md">
-      <ol class="list-decimal list-inside neutral-content">
-        {#each data.todoLists as todoList}
-          <li><a href="/{todoList.id}">{todoList.name}</a></li>
-        {/each}
-      </ol>
+    <div class="py-8 px-8 overflow-auto text-md">      
+        {#if data.todoLists.length > 0}
+          <ol class="list-decimal list-inside neutral-content">
+            {#each data.todoLists as todoList}
+              <li><a href="/{todoList.id}">{todoList.name}</a></li>
+            {/each}
+          </ol>
+        {:else}
+          <p class="text-center text-neutral-content mt-16">No items yet!</p>
+        {/if}
     </div>
   </div>
   <form class="form-control mx-6 block" method="POST" action="?/addNewList" use:enhance>

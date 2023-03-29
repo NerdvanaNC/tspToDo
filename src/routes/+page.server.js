@@ -1,8 +1,13 @@
-import { fail, redirect } from '@sveltejs/kit'
+import { error, fail, redirect } from '@sveltejs/kit'
 
 export async function load({ locals }) {
   if(locals.user) {
-    const todoLists = await locals.pb.collection('todoLists').getFullList({ sort: '-created' });
+    let todoLists;
+    try {
+      todoLists = await locals.pb.collection('todoLists').getFullList({ filter: `owner.id="${locals.user.id}"`, sort: '-created' });
+    } catch (e) {
+      throw error(404, e.response.message);
+    }
     return ({ todoLists: structuredClone(todoLists) });
   } else {
     // needs auth
@@ -19,6 +24,6 @@ export const actions = {
       return fail(400, { form: 'addNewList', error: true });
     }
 
-    await locals.pb.collection('todoLists').create({ 'name': listName });
+    await locals.pb.collection('todoLists').create({ 'name': listName, owner: locals.user.id });
   }
 }
