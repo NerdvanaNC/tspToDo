@@ -41,7 +41,7 @@
                   <span class="label-text">
                       {todoItem.description}
                   </span>
-                  <input class="checkbox" type="checkbox" on:change={(e) => e.target.closest('form').requestSubmit() } checked={todoItem.done} />
+                  <input class="checkbox" type="checkbox" on:click|preventDefault={(e) => e.target.closest('form').requestSubmit() } checked={todoItem.done} />
                 </label>
                 <input type="hidden" name="todoItemID" value="{todoItem.id}" />
               </form>
