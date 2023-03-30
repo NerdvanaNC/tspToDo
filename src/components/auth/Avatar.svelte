@@ -16,8 +16,8 @@
         <ul tabindex="0" class="dropdown-content menu p-4 mt-4 shadow bg-base-200 rounded-box w-52">
           <li><a href="/profile">Profile</a></li>
           <li>
-            <form action="/logout" method="POST" use:enhance>
-              <button type="submit">Logout</button>
+            <form class="p-0" action="/logout" method="POST" use:enhance>
+              <button class="block w-full text-left px-4 py-3" type="submit">Logout</button>
             </form>
           </li>
         </ul>
