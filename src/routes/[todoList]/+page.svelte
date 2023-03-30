@@ -32,7 +32,7 @@
     <div class="py-8 px-8 overflow-auto">
       {#if data.todoItems.length > 0}
         <ul>
-          {#each data.todoItems as todoItem}
+          {#each data.todoItems as todoItem (todoItem.id)}
             <li class="relative pl-6" in:fly|local={ { y: 10, duration: 50 } } out:fly|local={ { x: 10, duration: 50 } }>
               <form class="form-control" method="POST" action="?/markAsDone" use:enhance>
                 <button class="-ml-4 mr-2 absolute bottom-[10px] left-3" formaction="?/delete">
