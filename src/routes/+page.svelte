@@ -7,7 +7,7 @@
 
 <main class="w-96 h-[45vh]">
   <div class="card w-full h-full m-0 bg-base-200">
-    <h2 class="card-title bg-primary px-8 py-4 text-primary-content rounded-tl-md rounded-tr-md">Your Lists</h2>
+    <h2 class="card-title bg-primary px-8 py-4 text-primary-content rounded-tl-md rounded-tr-md">My Lists</h2>
     <div class="py-8 px-8 overflow-auto text-md">      
         {#if data.todoLists.length > 0}
           <ol class="list-decimal list-inside neutral-content">
