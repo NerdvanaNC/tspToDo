@@ -12,6 +12,6 @@
 
 <div class="container mx-auto w-screen h-screen px-3 pb-6 pt-32 lg:p-6 flex items-center justify-center relative">
   <Logo />
-  <Avatar authenticated={data.user ? true : false} />
+  <Avatar user={data.user} />
   <slot />
 </div>
