@@ -12,7 +12,7 @@
       <GoBack />
       {data.user.username}
     </h2>
-    <div class="py-14 px-8 overflow-auto text-md">
+    <div class="py-10 px-8 overflow-auto text-md">
       <form action="?/updateUser" method="POST" class="form-control" use:enhance>
         <input type="password" name="oldPassword" placeholder="Old Password:" class="input w-full mb-6" />
         <input type="password" name="password" placeholder="New Password (8+ characters):" class="input w-full mb-6" />
