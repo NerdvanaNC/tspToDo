@@ -4,7 +4,7 @@ import PocketBase from 'pocketbase';
 
 export async function handle({ event, resolve }) {
   // 1. Create a new PocketBase instance for each server-side request.
-  event.locals.pb = new PocketBase('http://127.0.0.1:8090');
+  event.locals.pb = new PocketBase(import.meta.env.VITE_PB_URL);
 
   // 2. "Load/Feed" your pb.authStore with data from the request cookie.
   event.locals.pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
